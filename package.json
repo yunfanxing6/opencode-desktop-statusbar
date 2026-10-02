@@ -1,0 +1,29 @@
+{
+  "name": "opencode-desktop-statusbar",
+  "version": "0.1.0",
+  "description": "An embedded status bar for the OpenCode macOS desktop app",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --experimental-strip-types --test test/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/preview.mjs",
+    "test:browser": "node scripts/test-browser.mjs",
+    "desktop:build": "node scripts/build-desktop.mjs",
+    "desktop:check": "node scripts/desktop.mjs check",
+    "desktop:install": "node scripts/desktop.mjs install",
+    "desktop:uninstall": "node scripts/desktop.mjs uninstall"
+  },
+  "dependencies": {
+    "@electron/asar": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "bun": "1.3.14",
+    "esbuild": "^0.25.0",
+    "playwright": "^1.59.1",
+    "typescript": "^5.8.2"
+  }
+}
