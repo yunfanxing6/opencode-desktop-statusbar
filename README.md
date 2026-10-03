@@ -26,7 +26,15 @@ npm run desktop:check
 npm run desktop:install
 ```
 
-`desktop:install` prepares the pinned OpenCode source checkout in `artifacts/upstream`, builds a patched desktop app, backs up the installed `app.asar`, replaces it, and re-signs the local app with an ad-hoc signature. Quit OpenCode before installing, then launch it again.
+`desktop:install` prepares the pinned OpenCode source checkout in `artifacts/upstream`, builds with `OPENCODE_CHANNEL=prod` and `OPENCODE_VERSION=1.18.34`, and installs the statusbar renderer. It preserves the installed main process, embedded server, native modules and production storage identity, backs up `app.asar` and `Info.plist`, updates ASAR integrity, and re-signs the app. Quit OpenCode before installing, then launch it again. Both desktop and server identities are validated before installation.
+
+An earlier installer omitted the release build environment. This selected `ai.opencode.desktop.dev` for desktop settings and `opencode-.db` for sessions, making existing production history appear missing. The original data remains in `ai.opencode.desktop` and `~/.local/share/opencode/opencode.db`. To repair an affected installation while keeping the statusbar:
+
+```sh
+npm run desktop:repair
+```
+
+Repair combines the original production runtime from the earliest verified backup with the current statusbar renderer. Quit and reopen OpenCode afterward. Production settings restore the project list and the agent selector (including Build and Plan). Sessions created in the affected Dev build remain in `opencode-.db`; repair does not overwrite or merge either database.
 
 If you already built the patched app, skip the source build:
 
@@ -36,7 +44,7 @@ OPENCODE_STATUSBAR_APP="/path/to/OpenCode.app" npm run desktop:install
 
 The installed app must report version `1.18.34`. Use `OPENCODE_APP` when OpenCode is installed somewhere else.
 
-Restore the most recent backup with:
+Restore the earliest verified production backup (the original app) with:
 
 ```sh
 npm run desktop:uninstall
@@ -59,6 +67,22 @@ Live speed is an estimate based on observed streamed text and reasoning characte
 ## Compatibility
 
 The desktop adapter is pinned to OpenCode 1.18.34 because OpenCode desktop bundles are versioned and the internal component tree can change. `desktop:check` and the installer refuse other versions. A future release can add a new adapter directory after checking the upstream session and event APIs.
+
+### DEV badge
+
+The `DEV` badge is the renderer's build channel, not an account or model setting. The first build used OpenCode's default development channel. Rebuilding with `OPENCODE_CHANNEL=prod` removes it. For an installation whose main/server identities are already production but whose UI still displays `DEV`, run:
+
+```sh
+node scripts/fix-renderer-channel.mjs
+```
+
+This rebuilds the renderer with the production channel and preserves the installed production runtime. Completely quit and reopen OpenCode afterward.
+
+### Updating OpenCode
+
+Official OpenCode updates replace the application resources and normally remove this statusbar patch. Install the official update, then wait for an adapter release matching that OpenCode version before reinstalling the statusbar. This release supports **1.18.34 only**; do not change the version guard to install it on a newer version.
+
+The local patch uses an ad-hoc macOS signature. Although the production updater and official update feed remain present, an in-app update may fail signature validation. Download and install the official macOS application when that happens; this restores the vendor signature. Replacing the app does not itself delete OpenCode's separate user data directory.
 
 ## License
 

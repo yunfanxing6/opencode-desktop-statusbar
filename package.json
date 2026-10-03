@@ -6,7 +6,7 @@
   "license": "MIT",
   "engines": { "node": ">=22" },
   "scripts": {
-    "test": "node --experimental-strip-types --test test/*.test.ts",
+    "test": "node --experimental-strip-types --test test/*.test.ts test/*.test.mjs",
     "typecheck": "tsc --noEmit",
     "build": "node scripts/build.mjs",
     "preview": "node scripts/preview.mjs",
@@ -14,6 +14,7 @@
     "desktop:build": "node scripts/build-desktop.mjs",
     "desktop:check": "node scripts/desktop.mjs check",
     "desktop:install": "node scripts/desktop.mjs install",
+    "desktop:repair": "node scripts/desktop.mjs repair",
     "desktop:uninstall": "node scripts/desktop.mjs uninstall"
   },
   "dependencies": {
